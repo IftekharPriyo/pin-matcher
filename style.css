@@ -104,3 +104,8 @@ color: #E0B612;
     color: #FF3C5F;
     margin-top: 10px;
 }
+
+#pin-display{
+    text-align: center;
+    color: tomato;
+}
