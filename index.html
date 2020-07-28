@@ -12,52 +12,64 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input id="pin-display" class="form-control" type="text" readonly>
-                    <button onclick="pinDisplayer()" id="generate-btn" class="generate-btn">Generate Pin</button>
+                    <input id="pin-display" class="form-control" type="text" placeholder="PIN appears here" readonly>
+                    <button onclick="pinDisplayer(), pinGeneratorAudio()" id="generate-btn" class="generate-btn">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input id="digit-display" class="form-control" type="text">
+                    <input id="digit-display" class="form-control" type="text" placeholder="Enter the PIN here">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div onclick="digitDisplay(7)" class="button">7</div>
-                              <div onclick="digitDisplay(8)" class="button">8</div>
-                              <div onclick="digitDisplay(9)" class="button">9</div>
+                              <div onclick="digitDisplay(7), buttonClickAudio()" class="button">7</div>
+                              <div onclick="digitDisplay(8), buttonClickAudio()" class="button">8</div>
+                              <div onclick="digitDisplay(9), buttonClickAudio()" class="button">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div onclick="digitDisplay(4)" class="button">4</div>
-                              <div onclick="digitDisplay(5)" class="button">5</div>
-                              <div onclick="digitDisplay(6)" class="button">6</div>
+                              <div onclick="digitDisplay(4), buttonClickAudio()" class="button">4</div>
+                              <div onclick="digitDisplay(5), buttonClickAudio()" class="button">5</div>
+                              <div onclick="digitDisplay(6), buttonClickAudio()" class="button">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div onclick="digitDisplay(1)" class="button">1</div>
-                              <div onclick="digitDisplay(2)" class="button">2</div>
-                              <div onclick="digitDisplay(3)" class="button">3</div>
+                              <div onclick="digitDisplay(1), buttonClickAudio()" class="button">1</div>
+                              <div onclick="digitDisplay(2), buttonClickAudio()" class="button">2</div>
+                              <div onclick="digitDisplay(3), buttonClickAudio()" class="button">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div onclick="backSpace()" class="button"><</div>
-                                <div onclick="digitDisplay(0)" class="button">0</div>
-                                <div onclick="cleanDisplay()" class="button">C</div>
+                                <div onclick="backSpace(), buttonClickAudio()" class="button"><</div>
+                                <div onclick="digitDisplay(0), buttonClickAudio()" class="button">0</div>
+                                <div onclick="cleanDisplay(), buttonClickAudio()" class="button">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button id="submit-pin" type="submit" class="submit-btn">Submit</button>
+                                <p id="action-left-text" class="action-left"> <span id="try-left">3</span> try left</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p id="wrong-entry" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="correct-entry" class="notify">✅ Pin Matched... Secret door is opening for you</p>
         </div>
+
+        <audio id="audio" src="audio/button.mp3.mp3"></audio>
+        <audio id="success-audio" src="audio/success1.mp3"></audio>
+        <audio id="pin-audio" src="audio/recieved.mp3"></audio>
+        <audio id="error-audio" src="audio/error.mp3"></audio>
+        <audio id="failed-audio" src="audio/failed.mp3"></audio>
     </div>
 
 
 
     <script>
+
+        //initial state
+        const initialState = document.getElementById('wrong-entry');
+        const initialState2 = document.getElementById('correct-entry');
+        initialState.style.display = initialState2.style.display = 'none';
+
 
         //function to generate the random number
         function randomPinGenerator(){
@@ -99,9 +111,71 @@
         function cleanDisplay(){
             document.getElementById('digit-display').value = '';
         }
-        
+
+
+        //submit button functionality and logics
+        const submitButton = document.getElementById('submit-pin');
+        let tryExists = document.getElementById('try-left').innerText;
+        let tryLeft = parseInt(tryExists);
+        submitButton.addEventListener('click',function(){
+            const pinDisplay = document.getElementById('pin-display');
+            const digitDisplay = document.getElementById('digit-display');
+            const wrongState = document.getElementById('wrong-entry');
+            const correctState = document.getElementById('correct-entry');
+            const actionLeftText = document.getElementById('action-left-text');
+            
+
+            if(pinDisplay.value===digitDisplay.value){
+                correctState.style.display='block';
+                wrongState.style.display='none';
+                actionLeftText.style.display='none';
+                submitButton.style.display='none';
+                successAudio();
+            }
+            else{
+                correctState.style.display='none';
+                wrongState.style.display='block';
+                tryLeft=tryLeft-1;
+                actionLeftText.innerText = tryLeft +' try left'
+                if(tryLeft>0){
+                    errorAudio();
+                }   
+                if(tryLeft<=0){
+                    submitButton.style.display='none';
+                    failedAudio();
+                }
+            }
+
+
+        })
+
+
+
+
 
         
+
+        //audio snippet
+        function buttonClickAudio() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+        function successAudio() {
+            var audio = document.getElementById("success-audio");
+            audio.play();
+        }
+       function pinGeneratorAudio(){
+            var audio = document.getElementById("pin-audio");
+            audio.play();
+       }
+       function errorAudio(){
+            var audio = document.getElementById("error-audio");
+            audio.play();
+       }
+       function failedAudio(){
+            var audio = document.getElementById("failed-audio");
+            audio.play();
+       }
        
 
 
