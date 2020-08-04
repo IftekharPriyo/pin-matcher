@@ -70,7 +70,7 @@ submitButton.addEventListener('click',function(){
             correctState.style.display='block';
             wrongState.style.display='none';
             actionLeftText.style.display='none';
-            submitButton.style.display='none';
+            submitButton.disabled= true;
             successAudio();
         }
          else{
@@ -82,7 +82,7 @@ submitButton.addEventListener('click',function(){
                 errorAudio();
             }   
             if(tryLeft<=0){
-                submitButton.style.display='none';
+                submitButton.disabled= true;
                 failedAudio();
             }
         }
